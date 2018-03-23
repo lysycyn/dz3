@@ -61,7 +61,11 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
+<<<<<<< HEAD
 /******/ 	var hotCurrentHash = "4b39648ffdba52d01506"; // eslint-disable-line no-unused-vars
+=======
+/******/ 	var hotCurrentHash = "ec962be2126017ef8e1b"; // eslint-disable-line no-unused-vars
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -753,6 +757,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 (() => {
+<<<<<<< HEAD
   const video = document.createElement('video');
 
   const canvasVision = document.querySelector('.js-vision');
@@ -771,6 +776,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     const terminator = new __WEBPACK_IMPORTED_MODULE_1__Terminator__["a" /* default */](video, canvasVision, stream, canvasGlitch, canvasSinewave, canvasFrequencyBar);
     terminator.run();
   });
+=======
+    const video = document.createElement('video');
+
+    const canvasVision = document.querySelector('.js-vision');
+
+    const canvasGlitch = document.querySelector('.js-glitch');
+    const canvasSinewave = document.querySelector('.js-sinewave');
+    const canvasFrequencyBar = document.querySelector('.js-frequency');
+
+    navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: {
+            width: canvasVision.width,
+            height: canvasVision.height
+        }
+    }).then(stream => {
+        const terminator = new __WEBPACK_IMPORTED_MODULE_1__Terminator__["a" /* default */](video, canvasVision, stream, canvasGlitch, canvasSinewave, canvasFrequencyBar);
+        terminator.run();
+    });
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 })();
 
 /***/ }),
@@ -1372,6 +1397,7 @@ module.exports = function (css) {
 
 
 
+<<<<<<< HEAD
 /**
  * Класс для запуска всех эффектов. Фактически - агрегатор разлинчных классов для удобного масштабирования
  */
@@ -1396,6 +1422,23 @@ class Terminator {
     this._sinewave.startSinewave();
     this._frequencyBar.startFrequency();
   }
+=======
+class Terminator {
+    constructor(video, canvasVision, stream, canvasGlitch, canvasSinewave, canvasFrequencyBar) {
+        this._glitch = new __WEBPACK_IMPORTED_MODULE_1__Glitch__["a" /* default */](canvasGlitch);
+        this._vision = new __WEBPACK_IMPORTED_MODULE_0__Vision___default.a(video, canvasVision, stream, this._glitch);
+        this._analyzer = new __WEBPACK_IMPORTED_MODULE_3__Analyzer__["a" /* default */](stream);
+        this._sinewave = new __WEBPACK_IMPORTED_MODULE_4__Sinewave__["a" /* default */](this._analyzer.getAnalyzer(), canvasSinewave);
+        this._frequencyBar = new __WEBPACK_IMPORTED_MODULE_5__FrequencyBar__["a" /* default */](this._analyzer.getAnalyzer(), canvasFrequencyBar);
+    }
+
+    run() {
+        __WEBPACK_IMPORTED_MODULE_2__Voice__["a" /* default */].speakPhraze("Система проанализирована");
+        this._vision.startVision();
+        this._sinewave.startSinewave();
+        this._frequencyBar.startFrequency();
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Terminator;
 
@@ -1404,6 +1447,7 @@ class Terminator {
 /* 7 */
 /***/ (function(module, exports) {
 
+<<<<<<< HEAD
 /**
  * Класс для отрисовки видео в канвасе. Для помех используется фильтр blur.
  * Также используется агрегат - оболочка для
@@ -1471,6 +1515,59 @@ class Vision {
     this._draw();
     setInterval(() => this._blurVision(), 5000);
   }
+=======
+class Vision {
+    constructor(video, canvas, stream, glitch) {
+        this._video = video;
+        this._canvas = canvas;
+        this._context = canvas.getContext('2d');
+        this._video.srcObject = stream;
+        this._glitch = glitch.glitchWrapper(3000);
+    }
+
+    _draw() {
+        this._context.drawImage(this._video, 0, 0, this._canvas.width, this._canvas.height);
+
+        let image = this._context.getImageData(0, 0, this._canvas.width, this._canvas.height);
+        let data = image.data;
+
+        for (let i = 0; i < image.data.length; i = i + 4) {
+            image.data[i + 1] = 0;
+            image.data[i + 2] = 0;
+        }
+
+        this._context.putImageData(image, 0, 0);
+
+        this._glitch(image);
+
+        requestAnimationFrame(() => this._draw());
+    }
+
+    _blurVision() {
+        let tick = 0;
+        const repeat = 5;
+
+        if (tick > repeat) {
+            return;
+        }
+
+        let timerId = setInterval(() => {
+            tick++;
+            const radius = (Math.random() * 100).toFixed(1);
+            this._canvas.style.filter = `blur(${radius}px)`;
+
+            if (tick > repeat) {
+                clearInterval(timerId);
+                this._canvas.style.filter = '';
+            }
+        }, 100);
+    }
+
+    startVision() {
+        this._draw();
+        setInterval(() => this._blurVision(), 5000);
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 
 module.exports = Vision;
@@ -1480,6 +1577,7 @@ module.exports = Vision;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_glitch_min__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_glitch_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_glitch_min__);
 
@@ -1526,6 +1624,45 @@ class Glitch {
       }
     };
   }
+=======
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_glitch_min_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_glitch_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_glitch_min_js__);
+
+
+class Glitch {
+    constructor(canvasGlitch) {
+        this._canvas = canvasGlitch;
+        this._context = canvasGlitch.getContext('2d');;
+    }
+
+    _draw(image) {
+        const timeDuration = 200;
+        __WEBPACK_IMPORTED_MODULE_0__lib_glitch_min_js___default()().fromImageData(image).toImageData().then(imageData => {
+            this._context.putImageData(imageData, 0, 0);
+
+            setTimeout(() => {
+                this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+            }, timeDuration);
+        });
+    }
+
+    glitchWrapper(time) {
+        let lock = false;
+
+        return (...args) => {
+
+            if (!lock) {
+
+                lock = true;
+                this._draw.apply(this, args);
+
+                setTimeout(() => {
+                    lock = false;
+                }, time);
+            }
+        };
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Glitch;
 
@@ -1535,6 +1672,7 @@ class Glitch {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {!function (t, e) {
+<<<<<<< HEAD
    true ? module.exports = e() : typeof define === 'function' && define.amd ? define(e) : t.glitch = e();
 }(this, () => {
   function t(t, e, n) {
@@ -1555,6 +1693,31 @@ class Glitch {
   }function i(t) {
     return new Promise((e, n) => {
       const r = new v();r.onload = function () {
+=======
+   true ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : t.glitch = e();
+}(this, function () {
+  "use strict";
+  function t(t, e, n) {
+    return t < e ? e : t > n ? n : t;
+  }function e(t) {
+    var e = !1;if (void 0 !== t) try {
+      e = JSON.parse(JSON.stringify(t));
+    } catch (t) {}return e;
+  }function n(n) {
+    return "object" != typeof (n = e(n)) && (n = {}), Object.keys(p).filter(function (t) {
+      return "iterations" !== t;
+    }).forEach(function (e) {
+      "number" != typeof n[e] || isNaN(n[e]) ? n[e] = p[e] : n[e] = t(n[e], 0, 100), n[e] = Math.round(n[e]);
+    }), ("number" != typeof n.iterations || isNaN(n.iterations) || n.iterations <= 0) && (n.iterations = p.iterations), n.iterations = Math.round(n.iterations), n;
+  }function r(t) {
+    if (t instanceof HTMLImageElement) {
+      if (!t.naturalWidth || !t.naturalHeight || !1 === t.complete) throw new Error("This this image hasn't finished loading: " + t.src);var e = new d(t.naturalWidth, t.naturalHeight),
+          n = e.getContext("2d");n.drawImage(t, 0, 0, e.width, e.height);var r = n.getImageData(0, 0, e.width, e.height);return r.data && r.data.length && (void 0 === r.width && (r.width = t.naturalWidth), void 0 === r.height && (r.height = t.naturalHeight)), r;
+    }throw new Error("This object does not seem to be an image.");
+  }function i(t) {
+    return new Promise(function (e, n) {
+      var r = new v();r.onload = function () {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
         e(r);
       }, r.onerror = function (t) {
         n(t);
@@ -1565,6 +1728,7 @@ class Glitch {
   }function o(t) {
     return { width: t.width || t.naturalWidth, height: t.height || t.naturalHeight };
   }function s(t) {
+<<<<<<< HEAD
     let e = o(t),
         n = new d(e.width, e.height),
         r = n.getContext('2d');return r.drawImage(t, 0, 0, e.width, e.height), { canvas: n, ctx: r };
@@ -1590,11 +1754,40 @@ class Glitch {
   },
       d = function (t, e) {
     void 0 === t && (t = 300), void 0 === e && (e = 150), this.canvasEl = document.createElement('canvas'), this.canvasEl.width = t, this.canvasEl.height = e, this.ctx = this.canvasEl.getContext('2d');
+=======
+    var e = o(t),
+        n = new d(e.width, e.height),
+        r = n.getContext("2d");return r.drawImage(t, 0, 0, e.width, e.height), { canvas: n, ctx: r };
+  }function u(t, e, n, r) {
+    i(t).then(function (t) {
+      var e = o(t),
+          r = s(t).ctx.getImageData(0, 0, e.width, e.height);r.width || (r.width = e.width), r.height || (r.height = e.height), n(r);
+    }, r);
+  }function c(t) {
+    return t && "number" == typeof t.width && "number" == typeof t.height && t.data && "number" == typeof t.data.length && "object" == typeof t.data;
+  }function f(t, e) {
+    return new Promise(function (n, r) {
+      if (c(t)) {
+        var i = new d(t.width, t.height);i.getContext("2d").putImageData(t, 0, 0), n(i.toDataURL("image/jpeg", e / 100));
+      } else r(new Error("object is not valid imageData"));
+    });
+  }function h(t) {
+    if (null === t || void 0 === t) throw new TypeError("Object.assign cannot be called with null or undefined");return Object(t);
+  }function l() {
+    throw new Error("Dynamic requires are not currently supported by rollup-plugin-commonjs");
+  }var p = { amount: 35, iterations: 20, quality: 30, seed: 25 },
+      d = function (t, e) {
+    void 0 === t && (t = 300), void 0 === e && (e = 150), this.canvasEl = document.createElement("canvas"), this.canvasEl.width = t, this.canvasEl.height = e, this.ctx = this.canvasEl.getContext("2d");
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
   },
       g = { width: { configurable: !0 }, height: { configurable: !0 } };d.prototype.getContext = function () {
     return this.ctx;
   }, d.prototype.toDataURL = function (t, e, n) {
+<<<<<<< HEAD
     if (typeof n !== 'function') return this.canvasEl.toDataURL(t, e);n(this.canvasEl.toDataURL(t, e));
+=======
+    if ("function" != typeof n) return this.canvasEl.toDataURL(t, e);n(this.canvasEl.toDataURL(t, e));
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
   }, g.width.get = function () {
     return this.canvasEl.width;
   }, g.width.set = function (t) {
@@ -1603,19 +1796,32 @@ class Glitch {
     return this.canvasEl.height;
   }, g.height.set = function (t) {
     this.canvasEl.height = t;
+<<<<<<< HEAD
   }, Object.defineProperties(d.prototype, g), d.Image = Image;var v = d.Image;'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('').forEach((t, e) => {});let m = Object.getOwnPropertySymbols,
+=======
+  }, Object.defineProperties(d.prototype, g), d.Image = Image;var v = d.Image;"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("").forEach(function (t, e) {});var m = Object.getOwnPropertySymbols,
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       b = Object.prototype.hasOwnProperty,
       y = Object.prototype.propertyIsEnumerable,
       w = function () {
     try {
+<<<<<<< HEAD
       if (!Object.assign) return !1;const t = new String('abc');if (t[5] = 'de', Object.getOwnPropertyNames(t)[0] === '5') return !1;for (var e = {}, n = 0; n < 10; n++) e[`_${String.fromCharCode(n)}`] = n;if (Object.getOwnPropertyNames(e).map(t => e[t]).join('') !== '0123456789') return !1;const r = {};return 'abcdefghijklmnopqrst'.split('').forEach(t => {
         r[t] = t;
       }), Object.keys(Object.assign({}, r)).join('') === 'abcdefghijklmnopqrst';
+=======
+      if (!Object.assign) return !1;var t = new String("abc");if (t[5] = "de", "5" === Object.getOwnPropertyNames(t)[0]) return !1;for (var e = {}, n = 0; n < 10; n++) e["_" + String.fromCharCode(n)] = n;if ("0123456789" !== Object.getOwnPropertyNames(e).map(function (t) {
+        return e[t];
+      }).join("")) return !1;var r = {};return "abcdefghijklmnopqrst".split("").forEach(function (t) {
+        r[t] = t;
+      }), "abcdefghijklmnopqrst" === Object.keys(Object.assign({}, r)).join("");
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
     } catch (t) {
       return !1;
     }
   }() ? Object.assign : function (t, e) {
     for (var n, r, i = arguments, a = h(t), o = 1; o < arguments.length; o++) {
+<<<<<<< HEAD
       n = Object(i[o]);for (const s in n) b.call(n, s) && (a[s] = n[s]);if (m) {
         r = m(n);for (let u = 0; u < r.length; u++) y.call(n, r[u]) && (a[r[u]] = n[r[u]]);
       }
@@ -1631,11 +1837,29 @@ class Glitch {
         return typeof t === 'function' || typeof t === 'object' && t !== null;
       }function e(t) {
         return typeof t === 'function';
+=======
+      n = Object(i[o]);for (var s in n) b.call(n, s) && (a[s] = n[s]);if (m) {
+        r = m(n);for (var u = 0; u < r.length; u++) y.call(n, r[u]) && (a[r[u]] = n[r[u]]);
+      }
+    }return a;
+  },
+      _ = "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : {};return function (t, e) {
+    return e = { exports: {} }, t(e, e.exports), e.exports;
+  }(function (t, e) {
+    !function (e, n) {
+      t.exports = n();
+    }(0, function () {
+      function t(t) {
+        return "function" == typeof t || "object" == typeof t && null !== t;
+      }function e(t) {
+        return "function" == typeof t;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       }function n() {
         return void 0 !== U ? function () {
           U(i);
         } : r();
       }function r() {
+<<<<<<< HEAD
         const t = setTimeout;return function () {
           return t(i, 1);
         };
@@ -1653,6 +1877,27 @@ class Glitch {
         return new TypeError('You cannot resolve a promise with itself');
       }function c() {
         return new TypeError('A promises callback cannot return that same promise.');
+=======
+        var t = setTimeout;return function () {
+          return t(i, 1);
+        };
+      }function i() {
+        for (var t = 0; t < k; t += 2) (0, F[t])(F[t + 1]), F[t] = void 0, F[t + 1] = void 0;k = 0;
+      }function a(t, e) {
+        var n = arguments,
+            r = this,
+            i = new this.constructor(s);void 0 === i[K] && I(i);var a = r._state;return a ? function () {
+          var t = n[a - 1];H(function () {
+            return D(a, i, t, r._result);
+          });
+        }() : w(r, i, t, e), i;
+      }function o(t) {
+        var e = this;if (t && "object" == typeof t && t.constructor === e) return t;var n = new e(s);return v(n, t), n;
+      }function s() {}function u() {
+        return new TypeError("You cannot resolve a promise with itself");
+      }function c() {
+        return new TypeError("A promises callback cannot return that same promise.");
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       }function f(t) {
         try {
           return t.then;
@@ -1666,6 +1911,7 @@ class Glitch {
           return t;
         }
       }function p(t, e, n) {
+<<<<<<< HEAD
         H(t => {
           let r = !1,
               i = h(n, e, n => {
@@ -1676,6 +1922,22 @@ class Glitch {
         }, t);
       }function d(t, e) {
         e._state === G ? b(t, e._result) : e._state === Q ? y(t, e._result) : w(e, void 0, e => v(t, e), e => y(t, e));
+=======
+        H(function (t) {
+          var r = !1,
+              i = h(n, e, function (n) {
+            r || (r = !0, e !== n ? v(t, n) : b(t, n));
+          }, function (e) {
+            r || (r = !0, y(t, e));
+          }, "Settle: " + (t._label || " unknown promise"));!r && i && (r = !0, y(t, i));
+        }, t);
+      }function d(t, e) {
+        e._state === G ? b(t, e._result) : e._state === Q ? y(t, e._result) : w(e, void 0, function (e) {
+          return v(t, e);
+        }, function (e) {
+          return y(t, e);
+        });
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       }function g(t, n, r) {
         n.constructor === t.constructor && r === a && n.constructor.resolve === o ? d(t, n) : r === V ? (y(t, V.error), V.error = null) : void 0 === r ? b(t, n) : e(r) ? p(t, n, r) : b(t, n);
       }function v(e, n) {
@@ -1683,6 +1945,7 @@ class Glitch {
       }function m(t) {
         t._onerror && t._onerror(t._result), j(t);
       }function b(t, e) {
+<<<<<<< HEAD
         t._state === z && (t._result = e, t._state = G, t._subscribers.length !== 0 && H(j, t));
       }function y(t, e) {
         t._state === z && (t._state = Q, t._result = e, H(m, t));
@@ -1693,6 +1956,18 @@ class Glitch {
         let e = t._subscribers,
             n = t._state;if (e.length !== 0) {
           for (let r = void 0, i = void 0, a = t._result, o = 0; o < e.length; o += 3) r = e[o], i = e[o + n], r ? D(n, r, i, a) : i(a);t._subscribers.length = 0;
+=======
+        t._state === z && (t._result = e, t._state = G, 0 !== t._subscribers.length && H(j, t));
+      }function y(t, e) {
+        t._state === z && (t._state = Q, t._result = e, H(m, t));
+      }function w(t, e, n, r) {
+        var i = t._subscribers,
+            a = i.length;t._onerror = null, i[a] = e, i[a + G] = n, i[a + Q] = r, 0 === a && t._state && H(j, t);
+      }function j(t) {
+        var e = t._subscribers,
+            n = t._state;if (0 !== e.length) {
+          for (var r = void 0, i = void 0, a = t._result, o = 0; o < e.length; o += 3) r = e[o], i = e[o + n], r ? D(n, r, i, a) : i(a);t._subscribers.length = 0;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
         }
       }function E() {
         this.error = null;
@@ -1703,7 +1978,11 @@ class Glitch {
           return X.error = t, X;
         }
       }function D(t, n, r, i) {
+<<<<<<< HEAD
         let a = e(r),
+=======
+        var a = e(r),
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
             o = void 0,
             s = void 0,
             u = void 0,
@@ -1712,9 +1991,15 @@ class Glitch {
         } else o = i, u = !0;n._state !== z || (a && u ? v(n, o) : f ? y(n, s) : t === G ? b(n, o) : t === Q && y(n, o));
       }function O(t, e) {
         try {
+<<<<<<< HEAD
           e(e => {
             v(t, e);
           }, e => {
+=======
+          e(function (e) {
+            v(t, e);
+          }, function (e) {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
             y(t, e);
           });
         } catch (e) {
@@ -1725,6 +2010,7 @@ class Glitch {
       }function I(t) {
         t[K] = Z++, t._state = void 0, t._result = void 0, t._subscribers = [];
       }function x(t, e) {
+<<<<<<< HEAD
         this._instanceConstructor = t, this.promise = new t(s), this.promise[K] || I(this.promise), B(e) ? (this._input = e, this.length = e.length, this._remaining = e.length, this._result = new Array(this.length), this.length === 0 ? b(this.promise, this._result) : (this.length = this.length || 0, this._enumerate(), this._remaining === 0 && b(this.promise, this._result))) : y(this.promise, P());
       }function P() {
         return new Error('Array Methods must be provided an Array');
@@ -1737,11 +2023,26 @@ class Glitch {
       }var C = void 0,
           B = C = Array.isArray ? Array.isArray : function (t) {
         return Object.prototype.toString.call(t) === '[object Array]';
+=======
+        this._instanceConstructor = t, this.promise = new t(s), this.promise[K] || I(this.promise), B(e) ? (this._input = e, this.length = e.length, this._remaining = e.length, this._result = new Array(this.length), 0 === this.length ? b(this.promise, this._result) : (this.length = this.length || 0, this._enumerate(), 0 === this._remaining && b(this.promise, this._result))) : y(this.promise, P());
+      }function P() {
+        return new Error("Array Methods must be provided an Array");
+      }function L() {
+        throw new TypeError("You must pass a resolver function as the first argument to the promise constructor");
+      }function S() {
+        throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+      }function T(t) {
+        this[K] = A(), this._result = this._state = void 0, this._subscribers = [], s !== t && ("function" != typeof t && L(), this instanceof T ? O(this, t) : S());
+      }var C = void 0,
+          B = C = Array.isArray ? Array.isArray : function (t) {
+        return "[object Array]" === Object.prototype.toString.call(t);
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       },
           k = 0,
           U = void 0,
           R = void 0,
           H = function (t, e) {
+<<<<<<< HEAD
         F[k] = t, F[k + 1] = e, (k += 2) === 2 && (R ? R(i) : J());
       },
           N = typeof window !== 'undefined' ? window : void 0,
@@ -1749,10 +2050,20 @@ class Glitch {
           $ = W.MutationObserver || W.WebKitMutationObserver,
           q = typeof self === 'undefined' && typeof process !== 'undefined' && {}.toString.call(process) === '[object process]',
           Y = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined',
+=======
+        F[k] = t, F[k + 1] = e, 2 === (k += 2) && (R ? R(i) : J());
+      },
+          N = "undefined" != typeof window ? window : void 0,
+          W = N || {},
+          $ = W.MutationObserver || W.WebKitMutationObserver,
+          q = "undefined" == typeof self && "undefined" != typeof process && "[object process]" === {}.toString.call(process),
+          Y = "undefined" != typeof Uint8ClampedArray && "undefined" != typeof importScripts && "undefined" != typeof MessageChannel,
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
           F = new Array(1e3),
           J = void 0;J = q ? function () {
         return process.nextTick(i);
       } : $ ? function () {
+<<<<<<< HEAD
         let t = 0,
             e = new $(i),
             n = document.createTextNode('');return e.observe(n, { characterData: !0 }), function () {
@@ -1765,6 +2076,20 @@ class Glitch {
       }() : void 0 === N && typeof l === 'function' ? function () {
         try {
           const t = l('vertx');return U = t.runOnLoop || t.runOnContext, n();
+=======
+        var t = 0,
+            e = new $(i),
+            n = document.createTextNode("");return e.observe(n, { characterData: !0 }), function () {
+          n.data = t = ++t % 2;
+        };
+      }() : Y ? function () {
+        var t = new MessageChannel();return t.port1.onmessage = i, function () {
+          return t.port2.postMessage(0);
+        };
+      }() : void 0 === N && "function" == typeof l ? function () {
+        try {
+          var t = l("vertx");return U = t.runOnLoop || t.runOnContext, n();
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
         } catch (t) {
           return r();
         }
@@ -1775,6 +2100,7 @@ class Glitch {
           V = new E(),
           X = new E(),
           Z = 0;return x.prototype._enumerate = function () {
+<<<<<<< HEAD
         for (let t = this, e = this.length, n = this._input, r = 0; this._state === z && r < e; r++) t._eachEntry(n[r], r);
       }, x.prototype._eachEntry = function (t, e) {
         let n = this._instanceConstructor,
@@ -1795,10 +2121,41 @@ class Glitch {
         } : (t, e) => e(new TypeError('You must pass an array to race.')));
       }, T.resolve = o, T.reject = function (t) {
         const e = new this(s);return y(e, t), e;
+=======
+        for (var t = this, e = this.length, n = this._input, r = 0; this._state === z && r < e; r++) t._eachEntry(n[r], r);
+      }, x.prototype._eachEntry = function (t, e) {
+        var n = this._instanceConstructor,
+            r = n.resolve;if (r === o) {
+          var i = f(t);if (i === a && t._state !== z) this._settledAt(t._state, e, t._result);else if ("function" != typeof i) this._remaining--, this._result[e] = t;else if (n === T) {
+            var u = new n(s);g(u, t, i), this._willSettleAt(u, e);
+          } else this._willSettleAt(new n(function (e) {
+            return e(t);
+          }), e);
+        } else this._willSettleAt(r(t), e);
+      }, x.prototype._settledAt = function (t, e, n) {
+        var r = this.promise;r._state === z && (this._remaining--, t === Q ? y(r, n) : this._result[e] = n), 0 === this._remaining && b(r, this._result);
+      }, x.prototype._willSettleAt = function (t, e) {
+        var n = this;w(t, void 0, function (t) {
+          return n._settledAt(G, e, t);
+        }, function (t) {
+          return n._settledAt(Q, e, t);
+        });
+      }, T.all = function (t) {
+        return new x(this, t).promise;
+      }, T.race = function (t) {
+        var e = this;return new e(B(t) ? function (n, r) {
+          for (var i = t.length, a = 0; a < i; a++) e.resolve(t[a]).then(n, r);
+        } : function (t, e) {
+          return e(new TypeError("You must pass an array to race."));
+        });
+      }, T.resolve = o, T.reject = function (t) {
+        var e = new this(s);return y(e, t), e;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
       }, T._setScheduler = function (t) {
         R = t;
       }, T._setAsap = function (t) {
         H = t;
+<<<<<<< HEAD
       }, T._asap = H, T.prototype = { constructor: T, then: a, catch(t) {
           return this.then(null, t);
         } }, T.polyfill = function () {
@@ -1810,19 +2167,42 @@ class Glitch {
           let n = null;try {
             n = Object.prototype.toString.call(e.resolve());
           } catch (t) {}if (n === '[object Promise]' && !e.cast) return;
+=======
+      }, T._asap = H, T.prototype = { constructor: T, then: a, catch: function (t) {
+          return this.then(null, t);
+        } }, T.polyfill = function () {
+        var t = void 0;if (void 0 !== _) t = _;else if ("undefined" != typeof self) t = self;else try {
+          t = Function("return this")();
+        } catch (t) {
+          throw new Error("polyfill failed because global object is unavailable in this environment");
+        }var e = t.Promise;if (e) {
+          var n = null;try {
+            n = Object.prototype.toString.call(e.resolve());
+          } catch (t) {}if ("[object Promise]" === n && !e.cast) return;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
         }t.Promise = T;
       }, T.Promise = T, T;
     });
   }).polyfill(), function (t) {
     function e() {
+<<<<<<< HEAD
       const t = w({}, b);return g || w(t, y), t;
     }function i() {
       const t = w({}, b);return v || w(t, _), t;
+=======
+      var t = w({}, b);return g || w(t, y), t;
+    }function i() {
+      var t = w({}, b);return v || w(t, _), t;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
     }function o(t) {
       return t;
     }function s(t, e, n) {
       return g = function () {
+<<<<<<< HEAD
         return new Promise((r, i) => {
+=======
+        return new Promise(function (r, i) {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
           if (n) t(e, r, i);else if (t === o) r(e);else try {
             r(t(e, r, i));
           } catch (t) {
@@ -1832,19 +2212,31 @@ class Glitch {
       }, h() ? l() : i();
     }function c(t, n, r) {
       return v = function (e) {
+<<<<<<< HEAD
         return new Promise((i, a) => {
+=======
+        return new Promise(function (i, a) {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
           r ? t(e, n, i, a) : t === o ? i(e) : t(e, n).then(i, a);
         });
       }, h() ? l() : e();
     }function h() {
       return g && v;
     }function l() {
+<<<<<<< HEAD
       return new Promise((e, n) => {
         g().then(e => p(e, t), n).then(t => {
+=======
+      return new Promise(function (e, n) {
+        g().then(function (e) {
+          return p(e, t);
+        }, n).then(function (t) {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
           v(t).then(e, n);
         }, n);
       });
     }function p(t, e) {
+<<<<<<< HEAD
       return new Promise((n, r) => {
         f(t, e.quality).then(n => d(t, n, e), r).then(n, r);
       });
@@ -1872,6 +2264,35 @@ class Glitch {
       }, toDataURL(t) {
         return c(o);
       }, toImageData(t) {
+=======
+      return new Promise(function (n, r) {
+        f(t, e.quality).then(function (n) {
+          return d(t, n, e);
+        }, r).then(n, r);
+      });
+    }function d(t, e, n) {
+      return new Promise(function (r, i) {
+        m.addEventListener("message", function (t) {
+          t.data && t.data.base64URL ? r(t.data.base64URL) : i(t.data && t.data.err ? t.data.err : t);
+        }), m.postMessage({ params: n, base64URL: e, imageData: t, imageDataWidth: t.width, imageDataHeight: t.height });
+      });
+    }t = n(t);var g,
+        v,
+        m = new Worker(URL.createObjectURL(new Blob(['function isImageData(a){return a&&"number"==typeof a.width&&"number"==typeof a.height&&a.data&&"number"==typeof a.data.length&&"object"==typeof a.data}function base64ToByteArray(a){for(var e,s=[],t=23,r=a.length;t<r;t++){var i=reversedBase64Map[a.charAt(t)];switch((t-23)%4){case 1:s.push(e<<2|i>>4);break;case 2:s.push((15&e)<<4|i>>2);break;case 3:s.push((3&e)<<6|i)}e=i}return s}function jpgHeaderLength(a){for(var e=417,s=0,t=a.length;s<t;s++)if(255===a[s]&&218===a[s+1]){e=s+2;break}return e}function glitchByteArray(a,e,s,t){for(var r=jpgHeaderLength(a),i=a.length-r-4,p=s/100,n=e/100,h=0;h<t;h++){var g=i/t*h|0,o=g+((i/t*(h+1)|0)-g)*n|0;o>i&&(o=i),a[~~(r+o)]=~~(256*p)}return a}function byteArrayToBase64(a){for(var e,s,t=["data:image/jpeg;base64,"],r=0,i=a.length;r<i;r++){var p=a[r];switch(e=r%3){case 0:t.push(base64Map$1[p>>2]);break;case 1:t.push(base64Map$1[(3&s)<<4|p>>4]);break;case 2:t.push(base64Map$1[(15&s)<<2|p>>6]),t.push(base64Map$1[63&p])}s=p}return 0===e?(t.push(base64Map$1[(3&s)<<4]),t.push("==")):1===e&&(t.push(base64Map$1[(15&s)<<2]),t.push("=")),t.join("")}function glitchImageData(a,e,s){if(isImageData(a))return byteArrayToBase64(glitchByteArray(base64ToByteArray(e),s.seed,s.amount,s.iterations));throw new Error("glitchImageData: imageData seems to be corrupt.")}function fail(a){self.postMessage({err:a.message||a})}function success(a){self.postMessage({base64URL:a})}var base64Chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",base64Map=base64Chars.split(""),reversedBase64Map$1={};base64Map.forEach(function(a,e){reversedBase64Map$1[a]=e});var maps={base64Map:base64Map,reversedBase64Map:reversedBase64Map$1},reversedBase64Map=maps.reversedBase64Map,base64Map$1=maps.base64Map;onmessage=function(a){var e=a.data.imageData,s=a.data.params,t=a.data.base64URL;if(e&&t&&s)try{void 0===e.width&&"number"==typeof a.data.imageDataWidth&&(e.width=a.data.imageDataWidth),void 0===e.height&&"number"==typeof a.data.imageDataHeight&&(e.height=a.data.imageDataHeight),success(glitchImageData(e,t,s))}catch(a){fail(a)}else fail(a.data.imageData?"Parameters are missing.":"ImageData is missing.");self.close()};'], { type: "text/javascript" }))),
+        b = { getParams: function () {
+        return t;
+      }, getInput: e, getOutput: i },
+        y = { fromImageData: function (t) {
+        return s(o, t);
+      }, fromImage: function (t) {
+        return s(r, t);
+      } },
+        _ = { toImage: function (t) {
+        return c(a, t, !0);
+      }, toDataURL: function (t) {
+        return c(o);
+      }, toImageData: function (t) {
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
         return c(u, t, !0);
       } };return e();
   };
@@ -2100,6 +2521,7 @@ process.umask = function() { return 0; };
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 /**
@@ -2127,6 +2549,26 @@ class Voice {
       }
     });
   }
+=======
+class Voice {
+    static tts() {
+        return new ya.speechkit.Tts({
+            lang: 'ru-RU',
+            apikey: 'cd321fd9-fb7b-42d1-9cfa-a4467abd4afa',
+            emotion: 'evil',
+            speed: 1,
+            speaker: 'ermil'
+        });
+    }
+
+    static speakPhraze(phraze) {
+        Voice.tts().speak(phraze, {
+            stopCallback: () => {
+                console.log(phraze);
+            }
+        });
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Voice;
 
@@ -2140,10 +2582,18 @@ class Voice {
  * Инициализация анализатора звука для последующего использования в отрисовке на канвасах
  */
 class Analyzer {
+<<<<<<< HEAD
   constructor(stream) {
     const audioContext = new window.AudioContext();
 
     this._analyzer = audioContext.createAnalyser();
+=======
+  constructor(stream, range) {
+    const audioContext = new window.AudioContext();
+
+    this._analyzer = audioContext.createAnalyser();
+    this._analyzer.volume;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 
     this._analyzer.minDecibels = -90;
     this._analyzer.maxDecibels = -10;
@@ -2151,6 +2601,10 @@ class Analyzer {
     this._analyzer.fftSize = 256;
 
     const source = audioContext.createMediaStreamSource(stream);
+<<<<<<< HEAD
+=======
+    const destination = audioContext.destination;
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 
     source.connect(this._analyzer);
   }
@@ -2167,6 +2621,7 @@ class Analyzer {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+<<<<<<< HEAD
 /**
  * Класс для отрисовки звуковой частоты с помощью канваса
  */
@@ -2226,6 +2681,60 @@ class Sinewave {
   startSinewave() {
     this._draw();
   }
+=======
+class Sinewave {
+    constructor(analyzer, canvas) {
+        this._analyzer = analyzer;
+        this._canvas = canvas;
+        this._context = canvas.getContext("2d");
+
+        this._bufferLength = this._analyzer.fftSize;
+        this._dataArray = new Uint8Array(this._bufferLength);
+
+        this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    }
+
+    _draw() {
+        this._analyzer.getByteTimeDomainData(this._dataArray);
+
+        this._context.fillStyle = 'rgb(255,0,0)';
+        this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+
+        this._context.lineWidth = 2;
+        this._context.strokeStyle = 'rgb(0, 0, 0)';
+
+        this._context.beginPath();
+
+        const sliceWidth = this._canvas.width / this._bufferLength;
+        let x = 0;
+        let i, v, y;
+
+        for (i = 0; i < this._bufferLength; i++) {
+
+            v = this._dataArray[i] / 128.0;
+            y = v * this._canvas.height / 2;
+
+            if (i === 0) {
+                this._context.moveTo(x, y);
+            } else {
+                this._context.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        this._context.lineTo(424, 50);
+        this._context.stroke();
+
+        requestAnimationFrame(() => {
+            this._draw();
+        });
+    }
+
+    startSinewave() {
+        this._draw();
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Sinewave;
 
@@ -2236,6 +2745,7 @@ class Sinewave {
 
 "use strict";
 class FrequencyBar {
+<<<<<<< HEAD
   constructor(analyzer, canvas) {
     this._canvas = canvas;
     this._context = this._canvas.getContext('2d');
@@ -2275,6 +2785,49 @@ class FrequencyBar {
   startFrequency() {
     this._draw();
   }
+=======
+    constructor(analyzer, canvas) {
+        this._canvas = canvas;
+        this._context = this._canvas.getContext('2d');
+        this._analyzer = analyzer;
+
+        this._bufferLengthAlt = this._analyzer.frequencyBinCount;
+        this._dataArrayAlt = new Uint8Array(this._bufferLengthAlt);
+
+        this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    }
+
+    _draw() {
+        this._analyzer.getByteFrequencyData(this._dataArrayAlt);
+
+        this._context.fillStyle = 'rgb(255, 0, 0)';
+        this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+
+        const barWidth = this._canvas.width / this._bufferLengthAlt * 2.5;
+        let i;
+        let barHeight;
+        let x = 0;
+
+        for (i = 0; i < this._bufferLengthAlt; i++) {
+            barHeight = this._dataArrayAlt[i];
+
+            // this._context.fillStyle = 'rgb(' + (barHeight + 100) + ',150,150)';
+            this._context.fillStyle = `rgb(${barHeight + 100}, 150, 150)`;
+            this._context.fillRect(x, this._canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+            x += barWidth + 1;
+        }
+
+        requestAnimationFrame(() => {
+            this._draw();
+        });
+    }
+
+    startFrequency() {
+        console.log('frequency');
+        this._draw();
+    }
+>>>>>>> 08d0ecfdc5273ebe52595aac0d874f16d69d0bac
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = FrequencyBar;
 
