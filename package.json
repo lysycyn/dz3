@@ -4,8 +4,8 @@
     "description": "",
     "main": "src/index.js",
     "scripts": {
-        "start": "webpack-dev-server --progress --profile --colors",
-        "build": "export NODE_ENV=development&&webpack",
+        "start": "export NODE_ENV=development&&webpack-dev-server --progress --profile --colors",
+        "build": "webpack",
         "lint": "eslint --ext=js --fix src/**/*.js",
         "precommit": "npm run lint"
     },

@@ -1,6 +1,5 @@
 import glitch from '../../lib/glitch.min';
 
-
 /**
  * Создание эффекта помех с помощью библиотеки glitch-canvas.
  * Фактически - нужна лишь обертка - функция для периодического срабатывания помех
@@ -38,7 +37,8 @@ export default class Glitch {
     return (...args) => {
       if (!lock) {
         lock = true;
-        this._draw.apply(this, ...args);
+        /* eslint-disable-next-line */
+        this._draw.apply(this, args);
 
         setTimeout(() => {
           lock = false;
